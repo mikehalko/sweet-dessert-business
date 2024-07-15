@@ -3,6 +3,7 @@ package ru.defezis.sweetdessertbusiness.rest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.defezis.sweetdessertbusiness.model.Dessert;
 import ru.defezis.sweetdessertbusiness.service.DessertService;
@@ -49,5 +50,10 @@ public class DessertController {
     public void delete(@PathVariable long dessertId) {
         log.info("delete dessert with id {}", dessertId);
         service.delete(dessertId);
+    }
+
+    @GetMapping("/check")
+    public ResponseEntity<String> check() {
+        return new ResponseEntity<>("OK", HttpStatus.OK);
     }
 }
