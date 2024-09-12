@@ -13,7 +13,7 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-@RequestMapping(path = "/api/dessert", produces = "application/json")
+@RequestMapping(path = "/api/desserts", produces = "application/json")
 public class DessertController {
 
     private final DessertService service;
