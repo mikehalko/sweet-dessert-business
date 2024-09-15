@@ -1,4 +1,4 @@
-package ru.defezis.sweetdessertbusiness.model;
+package ru.defezis.sweetdessertbusiness.dto;
 
 import lombok.Builder;
 import lombok.Data;
@@ -7,8 +7,8 @@ import java.util.List;
 
 @Data
 @Builder
-public class Dessert {
+public class DessertDto {
     private Long id;
     private String name;
-    private List<Long> ingredientIds;
+    private List<IngredientDto> ingredients;
 }
