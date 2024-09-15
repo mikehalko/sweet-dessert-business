@@ -17,7 +17,7 @@ import java.util.concurrent.atomic.AtomicLong;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class DessertInMemoryDataService {
+public class InMemoryDessertDataService implements DessertDataService {
 
     private static final AtomicLong ids = new AtomicLong(1);
     private static final List<Ingredient> ingredientList = new ArrayList<>(List.of(
@@ -126,6 +126,7 @@ public class DessertInMemoryDataService {
      *
      * @return список десертов
      */
+    @Override
     @NotNull
     public List<Dessert> listDesserts() {
         return List.copyOf(dessertList);
@@ -137,6 +138,7 @@ public class DessertInMemoryDataService {
      * @param id идентификатор Десерта
      * @return Десерта, либо пусто, если Десерт с таким id не найден
      */
+    @Override
     public Optional<Dessert> getDessertById(long id) {
         return dessertList.stream()
                 .filter(dessert -> dessert.getId().equals(id))
@@ -149,6 +151,7 @@ public class DessertInMemoryDataService {
      * @param dessert десерт
      * @return идентификатор сохраненного десерта
      */
+    @Override
     @NotNull
     public Long create(@NotNull Dessert dessert) {
         dessert.setId(nextId());
@@ -164,6 +167,7 @@ public class DessertInMemoryDataService {
      * @return обновленный Десерт
      * @throws IncorrectDataException если десерт не найден по идентификатору
      */
+    @Override
     public Dessert update(@NotNull Dessert updated) {
         Dessert dessert = dessertList.stream()
                 .filter(item -> item.getId().equals(updated.getId()))
@@ -182,7 +186,8 @@ public class DessertInMemoryDataService {
      *
      * @param id идентификатор
      */
-    public void removeById(long id) {
+    @Override
+    public void removeDessertById(long id) {
         boolean removed = dessertList.removeIf(dessert -> dessert.getId().equals(id));
         if (removed) {
             log.debug("Removed dessert with id: {}", id);
@@ -197,6 +202,7 @@ public class DessertInMemoryDataService {
      * @param ids идентификаторы Ингридиентов
      * @return список Ингридиентов
      */
+    @Override
     @NotNull
     public List<Ingredient> getIngredientsByIds(List<Long> ids) {
         return ingredientList.stream().filter(i -> ids.contains(i.getId())).toList();

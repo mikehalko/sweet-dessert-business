@@ -1,5 +1,6 @@
 package ru.defezis.sweetdessertbusiness.mapper;
 
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 import ru.defezis.sweetdessertbusiness.dto.DessertDto;
 import ru.defezis.sweetdessertbusiness.dto.IngredientDto;
@@ -11,7 +12,8 @@ import java.util.List;
 @Component
 public class Mapper {
 
-    public DessertDto toDto(Dessert dessert, List<Ingredient> ingredients) {
+    @NotNull
+    public DessertDto toDto(@NotNull Dessert dessert, @NotNull List<Ingredient> ingredients) {
         return DessertDto.builder()
                 .id(dessert.getId())
                 .name(dessert.getName())
@@ -19,7 +21,8 @@ public class Mapper {
                 .build();
     }
 
-    public IngredientDto toDto(Ingredient ingredient) {
+    @NotNull
+    public IngredientDto toDto(@NotNull Ingredient ingredient) {
         return IngredientDto.builder()
                 .id(ingredient.getId())
                 .name(ingredient.getName())

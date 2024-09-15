@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
-import ru.defezis.sweetdessertbusiness.data.DessertInMemoryDataService;
+import ru.defezis.sweetdessertbusiness.data.DessertDataService;
 import ru.defezis.sweetdessertbusiness.dto.ChangeDessertRequest;
 import ru.defezis.sweetdessertbusiness.dto.DessertDto;
 import ru.defezis.sweetdessertbusiness.mapper.Mapper;
@@ -16,7 +16,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class DessertService {
-    private final DessertInMemoryDataService dataService;
+    private final DessertDataService dataService;
     private final Mapper mapper;
 
     /**
@@ -41,8 +41,8 @@ public class DessertService {
     @NotNull
     public DessertDto getDessert(long id) {
         return dataService.getDessertById(id)
-                .map(i -> mapper.toDto(i, dataService.getIngredientsByIds(i.getIngredientIds())))
-                .orElseThrow(() -> new RuntimeException("Dessert id must be prefer to dessert"));
+                .map(i -> mapper.toDto(i, dataService.getIngredientsByIds(i.getIngredientIds()))) // TODO add cache or single request
+                .orElseThrow(() -> new RuntimeException("Dessert id must be prefer to dessert")); // TODO в другой exception
     }
 
     /**
@@ -82,6 +82,6 @@ public class DessertService {
      * @param dessertId идентификатор удаляемого Десерта
      */
     public void delete(long dessertId) {
-        dataService.removeById(dessertId);
+        dataService.removeDessertById(dessertId);
     }
 }
