@@ -1,7 +1,7 @@
 package ru.defezis.sweetdessertbusiness.enums;
 
-public enum Flavor {
-    SALTY, SWEET, SOUR, SPICY, NEUTRAL;
+public enum Taste {
+    SALTY, SWEET, SOUR, SPICY, NEUTRAL, FLAVOR, ALCOHOL;
 
     private Intensity intensity;
 }

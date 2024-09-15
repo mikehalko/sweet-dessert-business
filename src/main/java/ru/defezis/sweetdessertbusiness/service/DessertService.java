@@ -4,17 +4,20 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
-import ru.defezis.sweetdessertbusiness.data.DessertDataService;
+import ru.defezis.sweetdessertbusiness.data.DessertInMemoryDataService;
+import ru.defezis.sweetdessertbusiness.dto.ChangeDessertRequest;
+import ru.defezis.sweetdessertbusiness.dto.DessertDto;
+import ru.defezis.sweetdessertbusiness.mapper.Mapper;
 import ru.defezis.sweetdessertbusiness.model.Dessert;
 
 import java.util.List;
-import java.util.Objects;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class DessertService {
-    private final DessertDataService dataService;
+    private final DessertInMemoryDataService dataService;
+    private final Mapper mapper;
 
     /**
      * Получить список всех Десертов.
@@ -22,47 +25,55 @@ public class DessertService {
      * @return список десертов
      */
     @NotNull
-    public List<Dessert> getAll() {
-        return dataService.list();
+    public List<DessertDto> getAll() {
+        return dataService.listDesserts().stream()
+                .map(i -> mapper.toDto(i, dataService.getIngredientsByIds(i.getIngredientIds())))
+                .toList();
     }
 
     /**
      * Метод вернет Десерт по заданному идентификатору.
      *
-     * @param dessertId идентификатор Десерта
+     * @param id идентификатор Десерта
      * @return модель Десерта
      * @throws RuntimeException если Десерт с таким id не найден
      */
     @NotNull
-    public Dessert getDessert(long dessertId) {
-        Dessert result = dataService.getById(dessertId);
-        if (Objects.nonNull(result)) {
-            return result;
-        } else {
-            throw new RuntimeException("Dessert id must be prefer to dessert"); // TODO exception
-        }
+    public DessertDto getDessert(long id) {
+        return dataService.getDessertById(id)
+                .map(i -> mapper.toDto(i, dataService.getIngredientsByIds(i.getIngredientIds())))
+                .orElseThrow(() -> new RuntimeException("Dessert id must be prefer to dessert"));
     }
 
     /**
      * Сохранить новый Десерт.
      *
-     * @param dessertNew новый Десерт
+     * @param toCreate новый Десерт
      * @return идентификатор сохраненного десерта
      */
     @NotNull
-    public Long create(@NotNull Dessert dessertNew) {
-        return dataService.create(dessertNew);
+    public Long create(@NotNull ChangeDessertRequest toCreate) {
+        Dessert dessert = Dessert.builder()
+                .name(toCreate.getName())
+                .ingredientIds(toCreate.getIngredientIds())
+                .build();
+
+        return dataService.create(dessert);
     }
 
     /**
      * Обновить существующий Десерт.
      *
-     * @param dessertNew Десерт с данными для обновления
+     * @param toUpdate Десерт с данными для обновления
      * @param dessertId идентификатор Десерта для обновления
      */
-    public void update(@NotNull Dessert dessertNew, long dessertId) {
-        dessertNew.setId(dessertId);
-        dataService.update(dessertNew);
+    public void update(@NotNull ChangeDessertRequest toUpdate, long dessertId) {
+        Dessert dessert = dataService.getDessertById(dessertId)
+                .orElseThrow(() -> new RuntimeException("Dessert id must be prefer to dessert"));
+        dessert.setName(toUpdate.getName());
+        dessert.setIngredientIds(toUpdate.getIngredientIds());
+
+        dataService.update(dessert);
     }
 
     /**

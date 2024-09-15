@@ -5,7 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.defezis.sweetdessertbusiness.model.Dessert;
+import ru.defezis.sweetdessertbusiness.dto.ChangeDessertRequest;
+import ru.defezis.sweetdessertbusiness.dto.DessertDto;
 import ru.defezis.sweetdessertbusiness.service.DessertService;
 
 import java.util.List;
@@ -19,30 +20,29 @@ public class DessertController {
     private final DessertService service;
 
     @GetMapping
-    public List<Dessert> list() {
+    public List<DessertDto> list() {
         log.info("list desserts");
         return service.getAll();
     }
 
     @GetMapping("/{dessertId}")
-    public Dessert get(@PathVariable int dessertId) {
+    public DessertDto get(@PathVariable int dessertId) {
         log.info("get dessert with id {}", dessertId);
         return service.getDessert(dessertId);
     }
 
     @ResponseStatus(HttpStatus.OK)
     @PutMapping("/{dessertId}")
-    public void update(@RequestBody Dessert dessert, @PathVariable long dessertId) {
-        log.info("update dessert {} with id {}", dessert, dessertId);
-        dessert.setId(dessertId);
-        service.update(dessert, dessertId);
+    public void update(@RequestBody ChangeDessertRequest request, @PathVariable long dessertId) {
+        log.info("update dessert {} with id {}", request, dessertId);
+        service.update(request, dessertId);
     }
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    public Long create(@RequestBody Dessert dessert) {
-        log.info("create dessert {}", dessert);
-        return service.create(dessert);
+    public Long create(@RequestBody ChangeDessertRequest request) {
+        log.info("create dessert {}", request);
+        return service.create(request);
     }
 
     @ResponseStatus(HttpStatus.OK)
